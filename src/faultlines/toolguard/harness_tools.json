@@ -1,0 +1,23 @@
+{
+  "_comment": "The 9 swegemma tools with the exact signatures published in the competition's HARNESS_README.md and Overview (Gemma 4 Developer Agent Competition, Sep 2026).",
+  "tools": [
+    {"name": "run_command", "description": "Execute a shell command in /bin/bash -c inside /workspace. 300 s timeout; stdout/stderr truncated to 5000 characters.",
+     "parameters": {"type": "object", "properties": {"command": {"type": "string"}}, "required": ["command"]}},
+    {"name": "submit_patch", "description": "Stage untracked file intents (git add -N .) and capture git diff HEAD from /workspace. Call last; ends the session.",
+     "parameters": {"type": "object", "properties": {}, "required": []}},
+    {"name": "get_status", "description": "Return live budget consumption and patch status.",
+     "parameters": {"type": "object", "properties": {}, "required": []}},
+    {"name": "read_file", "description": "Read a file from /workspace with 1-indexed inclusive line slicing (max 150 lines / 10000 characters per call).",
+     "parameters": {"type": "object", "properties": {"filepath": {"type": "string"}, "start_line": {"type": "integer"}, "end_line": {"type": "integer"}}, "required": ["filepath"]}},
+    {"name": "edit_file", "description": "Replace old_string with new_string in an existing non-empty file inside /workspace.",
+     "parameters": {"type": "object", "properties": {"filepath": {"type": "string"}, "old_string": {"type": "string"}, "new_string": {"type": "string"}, "allow_multiple": {"type": "boolean"}}, "required": ["filepath", "old_string", "new_string"]}},
+    {"name": "write_file", "description": "Create or overwrite a file at /workspace/<filepath>, creating parent directories.",
+     "parameters": {"type": "object", "properties": {"filepath": {"type": "string"}, "content": {"type": "string"}}, "required": ["filepath", "content"]}},
+    {"name": "get_code_neighbors", "description": "Find incoming and outgoing neighbors of a symbol in the repository call/dependency graph.",
+     "parameters": {"type": "object", "properties": {"node": {"type": "string"}, "edge_type": {"type": "string"}, "max_neighbors": {"type": "integer"}}, "required": ["node"]}},
+    {"name": "search_similar_code", "description": "Find the top-k graph nodes most similar to a symbol name using the pre-computed embeddings.",
+     "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "k": {"type": "integer"}}, "required": ["query"]}},
+    {"name": "get_code_subgraph", "description": "Extract the induced subgraph (nodes and interconnecting edges) for a list of symbols.",
+     "parameters": {"type": "object", "properties": {"nodes": {"type": "array"}}, "required": ["nodes"]}}
+  ]
+}

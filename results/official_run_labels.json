@@ -1,0 +1,38 @@
+{
+ "auto": {
+  "rich_3454": "RESOLVED",
+  "httpx_3672": "BUDGET",
+  "fastapi_14077": "LOOP",
+  "requests_6589": "LOOP",
+  "rich_3518": "RESOLVED",
+  "fastapi_14262": "BUDGET",
+  "requests_6757": "LOOP",
+  "rich_3675": "BUDGET",
+  "fastapi_14303": "NO_PATCH",
+  "requests_7315": "LOOP",
+  "rich_3930": "BUDGET",
+  "fastapi_14361": "BUDGET",
+  "requests_7433": "LOOP",
+  "rich_4079": "BUDGET",
+  "fastapi_14485": "NO_PATCH",
+  "requests_7502": "NO_PATCH"
+ },
+ "manual": {
+  "rich_3454": "RESOLVED",
+  "httpx_3672": "BUDGET",
+  "fastapi_14077": "INTERFACE",
+  "requests_6589": "LOOP",
+  "rich_3518": "RESOLVED",
+  "fastapi_14262": "BUDGET",
+  "requests_6757": "INTERFACE",
+  "rich_3675": "BUDGET",
+  "fastapi_14303": "ENV_UNVERIFIABLE",
+  "requests_7315": "LOOP",
+  "rich_3930": "BUDGET",
+  "fastapi_14361": "BUDGET",
+  "requests_7433": "LOOP",
+  "rich_4079": "BUDGET",
+  "fastapi_14485": "ENV_UNVERIFIABLE",
+  "requests_7502": "ENV_UNVERIFIABLE"
+ }
+}
