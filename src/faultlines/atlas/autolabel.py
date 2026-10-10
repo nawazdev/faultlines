@@ -16,6 +16,8 @@ from ..toolguard.repair import ESCAPABLE_ARGS, ToolCall, is_over_escaped
 from .taxonomy import Primary
 from .trace import Run
 
+CONTEXT_ERROR = re.compile(r"ContextWindowExceeded|maximum context length", re.I)
+
 GRAPH_TOOLS = {"get_code_neighbors", "search_similar_code", "get_code_subgraph"}
 
 RUNTIME_PATTERNS = [
@@ -160,9 +162,15 @@ def label_run(run: Run, registry: ToolRegistry, th: Thresholds | None = None) ->
 
     max_prompt = max((s.prompt_tokens or 0 for s in steps), default=0)
     compactions = sum("compaction" in e for s in steps for e in s.events)
-    context_pressure = bool(run.context_limit and max_prompt >= th.context_ratio * run.context_limit) or compactions > 0
-    if context_pressure:
+    # A crash because the prompt no longer fits is CONTEXT; compaction alone is routine (63 of 70 E3 runs,
+    # including every resolved one), so it is only a secondary flag.
+    context_crash = bool(CONTEXT_ERROR.search(getattr(run, "harness_error", "") or ""))
+    near_limit = bool(run.context_limit and max_prompt >= th.context_ratio * run.context_limit)
+    context_pressure = context_crash or near_limit
+    if context_pressure or compactions:
         sec.append("CONTEXT_PRESSURE")
+    if compactions:
+        sec.append("COMPACTED")
 
     rt = sum(1 for s in steps if s.runtime_error and s.runtime_error not in NOT_A_RUNTIME_ERROR)
     if rt >= th.runtime_errors_flag:
@@ -189,7 +197,10 @@ def label_run(run: Run, registry: ToolRegistry, th: Thresholds | None = None) ->
     elif not submitted:
         escaped = [s for s in steps if "ESCAPED_STRING" in s.call_issues]
         escaped_failed = [s for s in escaped if s.runtime_error in ("EDIT_NO_MATCH", "EDIT_FAILED")]
-        if len(escaped_failed) >= th.escaped_edits:
+        if context_crash:
+            primary = Primary.CONTEXT
+            ev.append("harness error: prompt exceeded the context window left after the output reserve")
+        elif len(escaped_failed) >= th.escaped_edits:
             primary = Primary.INTERFACE
             ev.append(f"{len(escaped_failed)} over-escaped edit calls failed (literal \\n in string args)")
         elif interface_breakdown:

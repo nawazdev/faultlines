@@ -7,7 +7,7 @@ Code for the paper *Fault Lines: Where Local Gemma 4 Coding Agents Break*, a Kag
 - **toolguard**: parses Gemma 4's native tool-call syntax (`<|tool_call>call:NAME{...}<tool_call|>`), classifies what is wrong, repairs only what is safe to repair, and detects loops. Pure Python, no dependencies.
 - **atlas**: a trace schema, a failure taxonomy, an auto-labeler and the statistics the paper needs (Wilson CIs, Cohen's kappa, exact McNemar).
 
-Status: **v0.2.** Tested on real traces from the official competition harness: a 16-task pilot of Gemma 4 31B and a paired prompt-only before/after run (RQ4). Results are summarized in `results/`. 30 tests pass.
+Status: **v0.3.** Tested on real traces from the official competition harness: a 16-task pilot of Gemma 4 31B, a paired prompt-only before/after run (RQ4), an environment check of all 129 dev tasks, and a run on the 70 judgeable tasks (E3). Results are summarized in `results/`. 33 tests pass.
 
 ## Install
 
@@ -106,8 +106,12 @@ faultlines harness ... --mode guard --out runs/e4b_guard                        
 | `results/official_run_2026-09-29.md` | Pilot: 16 dev tasks, official harness, Gemma 4 31B (QAT W4A16). Per-run auto and hand labels. |
 | `results/official_run_labels.json` | The pilot's auto and adjudicated labels as JSON |
 | `results/rq4_treatment_2026-10-04.md` | RQ4: the same 16 tasks with a prompt-only addendum, paired against the pilot |
+| `results/envcheck_gold_replay_2026-10-06.md` | Reference/empty-patch replay of all 129 dev tasks; `judgeable_tasks.json` lists the 70 judgeable ones |
+| `results/e3_judgeable70_2026-10-07.md` | E3: the 70 judgeable tasks, per-task outcomes and labels (`e3_rows.csv`) |
 
-Headline: tool-call syntax was almost always valid (2 of 520 turns), but argument encoding, exact loops and the 50-turn budget sank most runs. A prompt-only fix raised submissions from 4 to 11 of 16 (exact McNemar p = 0.04) but resolutions only from 2 to 3. Half of the pilot's verifications were confounded by the sandbox environment.
+Headline: on the 70 judgeable dev tasks Gemma 4 31B resolved 27 (39%, 95% CI 28-50%). 15 runs (21%) crashed because the sample config reserves 16,384 output tokens of the 32K window, so prompts over 16,384 tokens are refused, although 99% of completions are under 2,700 tokens. In the pilot, argument encoding, exact loops and the 50-turn budget sank most runs; a prompt-only fix raised submissions from 4 to 11 of 16 (exact McNemar p = 0.04) without changing resolution on judgeable tasks. Only 70 of 129 dev tasks can be judged in the starter's sandbox.
+
+Labeler v0.3 (from E3): a run that crashes with a context-window error is CONTEXT; compactions are inferred from sharp drops in prompt size and are a secondary flag only, since 63 of 70 E3 runs compacted, including every resolved one.
 
 ## Honest caveats
 

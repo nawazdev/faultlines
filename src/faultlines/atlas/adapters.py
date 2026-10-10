@@ -160,6 +160,20 @@ def trace_shape(obj: Any, depth: int = 0, max_depth: int = 4) -> str:
     return out
 
 
+def infer_compactions(steps: list[Step], drop: float = 0.7, min_prompt: int = 4096) -> int:
+    """Mark compactions the trace does not record: the prompt shrinks below `drop` x the previous one.
+
+    swegemma's traces carry no compaction event, but history compaction shows up as a sharp fall
+    in prompt_tokens between consecutive turns (e.g. 16,258 -> 5,312)."""
+    n = 0
+    for prev, cur in zip(steps, steps[1:]):
+        p, c = prev.prompt_tokens or 0, cur.prompt_tokens or 0
+        if p >= min_prompt and c and c < drop * p and not any("compaction" in e for e in cur.events):
+            cur.events.append("compaction:inferred")
+            n += 1
+    return n
+
+
 def load_swegemma_results(results_dir: str | Path, tasks_path: str | Path | None = None,
                           model: str = "", config_hash: str = "", context_limit: int | None = 32768,
                           decode: Callable[[list[int]], str] | None = None, harness: str = "swegemma") -> Iterator[Run]:
@@ -225,6 +239,8 @@ def load_swegemma_results(results_dir: str | Path, tasks_path: str | Path | None
                            and k in ("trace", "session_trace", "trajectory", "atif")), None)
             if inline:
                 run.steps = atif_to_steps(inline, decode)
+        run.harness_error = str(_pick(tr, "error_message", "error", default="") or "")[:2000]
+        infer_compactions(run.steps)
         if not run.exit_reason or run.exit_reason in ("SUCCESS", "unknown"):
             run.exit_reason = "submitted" if any(s.tool_name == "submit_patch" for s in run.steps) else "not_submitted"
         yield run

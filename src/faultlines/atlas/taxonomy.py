@@ -54,8 +54,8 @@ DEFINITIONS = {
     Primary.INTERFACE: "Did not submit; >=3 of the last 5 turns had a rejected or missing tool call, "
                        "or the last turn was a truncated call.",
     Primary.LOOP: "Did not submit; a repeat/cycle loop was detected in the final third of the run.",
-    Primary.CONTEXT: "Did not submit; prompt size reached >=90% of the context limit, "
-                     "or a compaction event occurred.",
+    Primary.CONTEXT: "Did not submit; the run crashed because the prompt no longer fit the context "
+                     "window left after the output reserve, or the prompt reached >=90% of the context limit.",
     Primary.BUDGET: "Did not submit and none of the above: ran out of time, turns or tool calls.",
     Primary.NO_PATCH: "Submitted with an empty diff.",
     Primary.BROKEN_PATCH: "Patch failed to apply, or the test run failed at collection/import.",
@@ -69,7 +69,8 @@ SECONDARY_FLAGS = {
     "HIGH_INVALID_RATE": ">=20% of turns had a rejected or missing tool call",
     "HAD_TRUNCATION": "at least one truncated tool call",
     "HAD_LOOP": "loop detected anywhere in the run",
-    "CONTEXT_PRESSURE": "prompt reached >=90% of context limit or compaction happened",
+    "CONTEXT_PRESSURE": "context crash, prompt >=90% of context limit, or compaction",
+    "COMPACTED": "the harness compacted history at least once (recorded or inferred from prompt size)",
     "RUNTIME_ERRORS": ">=3 tool results were errors (edit no-match, file not found, timeout)",
     "USED_CODE_GRAPH": "called a code-intelligence tool at least once",
     "NUDGED": "harness injected a continuation nudge at least once",

@@ -51,6 +51,7 @@ class Run:
     harness: str = ""                           # e.g. "faultlines-mini-0.1/strict"
     timing: dict[str, float] = field(default_factory=dict)   # setup_s, agent_s, verify_s
     notes: list[str] = field(default_factory=list)            # environment notes (e.g. online_pip_fallback)
+    harness_error: str = ""                     # error message the harness recorded for the run, if any
     # filled by the labeler / annotator
     primary_failure: str | None = None
     secondary: list[str] = field(default_factory=list)
