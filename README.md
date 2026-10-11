@@ -7,7 +7,9 @@ Code for the paper *Fault Lines: Where Local Gemma 4 Coding Agents Break*, a Kag
 - **toolguard**: parses Gemma 4's native tool-call syntax (`<|tool_call>call:NAME{...}<tool_call|>`), classifies what is wrong, repairs only what is safe to repair, and detects loops. Pure Python, no dependencies.
 - **atlas**: a trace schema, a failure taxonomy, an auto-labeler and the statistics the paper needs (Wilson CIs, Cohen's kappa, exact McNemar).
 
-Status: **v0.3.** Tested on real traces from the official competition harness: a 16-task pilot of Gemma 4 31B, a paired prompt-only before/after run (RQ4), an environment check of all 129 dev tasks, and a run on the 70 judgeable tasks (E3). Results are summarized in `results/`. 33 tests pass.
+Status: **v0.3.** Tested on real traces from the official competition harness: a 16-task pilot of Gemma 4 31B, a paired prompt-only before/after run (RQ4), an environment check of all 129 dev tasks, and two runs on the 70 judgeable tasks (E3, and E5 with the output reserve halved). Results are summarized in `results/`. 33 tests pass.
+
+Data: [FaultLines-Traces Labels](https://www.kaggle.com/datasets/nawazs4265/faultlines-traces-labels) (CC BY 4.0) holds the labels and step metadata of all 172 runs. It contains no task or model text, because the competition rules (Section 4b) forbid redistributing competition data; participants can regenerate the full traces with `scripts/official_addon_e3.py` / `official_addon_e5.py`.
 
 ## Install
 
