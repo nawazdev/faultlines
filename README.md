@@ -9,7 +9,7 @@ Code for the paper *Fault Lines: Where Local Gemma 4 Coding Agents Break*, a Kag
 
 Status: **v0.3.** Tested on real traces from the official competition harness: a 16-task pilot of Gemma 4 31B, a paired prompt-only before/after run (RQ4), an environment check of all 129 dev tasks, and three runs on the 70 judgeable tasks (E3; E5 with the output reserve halved; E6, an identical repeat of E5). Results are summarized in `results/`. 33 tests pass.
 
-Data: [FaultLines-Traces Labels](https://www.kaggle.com/datasets/nawazs4265/faultlines-traces-labels) (CC BY 4.0) holds the labels and step metadata of all 172 runs. It contains no task or model text, because the competition rules (Section 4b) forbid redistributing competition data; participants can regenerate the full traces with `scripts/official_addon_e3.py` / `official_addon_e5.py`.
+Data: [FaultLines-Traces Labels](https://www.kaggle.com/datasets/nawazs4265/faultlines-traces-labels) (CC BY 4.0) holds the labels and step metadata of all 242 runs. It contains no task or model text, because the competition rules (Section 4b) forbid redistributing competition data; participants can regenerate the full traces with `scripts/official_addon_e3.py` / `official_addon_e5.py`. The notebook `notebooks/faultlines_reproduce.ipynb` ([on Kaggle](https://www.kaggle.com/code/nawazs4265/faultlines-reproduce-the-paper-tables)) rebuilds the paper's tables from that dataset.
 
 ## Install
 
